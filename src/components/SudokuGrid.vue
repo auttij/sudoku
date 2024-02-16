@@ -5,7 +5,7 @@ import SudokuCell from "./SudokuCell.vue";
 const store = useSudokuStore();
 
 const { puzzle, activeRow, activeCol } = storeToRefs(store);
-const { setCellActive } = store;
+const { setCellActive, toggleNotes } = store;
 
 // eslint-disable-next-line
 const { setCellValue, generatePuzzle } = store;
@@ -61,6 +61,11 @@ window.addEventListener("keydown", (e) => {
       />
     </div>
   </div>
+  <label class="container"
+    >Notes
+    <input type="checkbox" @click="toggleNotes" />
+    <span class="checkmark"></span>
+  </label>
 </template>
 
 <style scoped>

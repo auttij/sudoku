@@ -9,8 +9,7 @@ defineProps({
 
 const store = useSudokuStore();
 const { activeRow, activeCol, activeValue } = storeToRefs(store);
-const { setCellActive } = store;
-const invalid = false;
+const { setCellActive, isCellInvalid } = store;
 </script>
 
 <template>
@@ -20,13 +19,22 @@ const invalid = false;
       'border-right': col === 2 || col == 5,
       'border-bottom': row === 2 || row == 5,
       original: cell.original,
+      invalid: cell.value && isCellInvalid(row, col, cell.value),
       active: row === activeRow && col === activeCol,
-      matching: cell.value && activeValue.value == cell.value,
-      invalid: invalid,
+      matching:
+        (cell.value && activeValue.value == cell.value) ||
+        cell.notes.includes(activeValue.value),
     }"
     @click="setCellActive(row, col)"
   >
-    {{ cell.value }}
+    <div v-if="cell.value" class="value">
+      {{ cell.value }}
+    </div>
+    <div class="notes" v-else-if="cell.notes.length">
+      <div class="note" v-for="index in 9" :key="index">
+        {{ cell.notes.includes(index) ? index : null }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,11 +46,26 @@ const invalid = false;
   box-sizing: border-box;
   border: 1px solid #bbb;
 
+  cursor: default;
+}
+
+.cell .value {
   font-size: 24px;
   line-height: 40px;
   text-align: center;
+}
 
-  cursor: default;
+.cell .notes {
+  padding: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cell .notes .note {
+  font-size: 11px;
+  width: 8px;
+  line-height: 8px;
 }
 
 .cell.border-right {
@@ -68,7 +91,7 @@ const invalid = false;
 }
 
 .cell.invalid {
-  background-color: #c00;
+  background-color: #c00 !important; 
   color: #fff;
 }
 </style>
