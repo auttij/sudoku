@@ -1,27 +1,34 @@
+<script setup>
+import { useSudokuStore } from "../store.js";
+import { storeToRefs } from "pinia";
+defineProps({
+  cell: Object,
+  row: Number,
+  col: Number,
+});
+
+const store = useSudokuStore();
+const { activeRow, activeCol, activeValue } = storeToRefs(store);
+const { setCellActive } = store;
+const invalid = false;
+</script>
+
 <template>
-  <div class="cell" :class="{
-    'border-right': col === 2 || col == 5,
-    'border-bottom': row === 2 || row == 5,
-    'original': cell.original,
-    'active': active,
-    'invalid': invalid,
-  }" @click="$emit('click')">
+  <div
+    class="cell"
+    :class="{
+      'border-right': col === 2 || col == 5,
+      'border-bottom': row === 2 || row == 5,
+      original: cell.original,
+      active: row === activeRow && col === activeCol,
+      matching: cell.value && activeValue.value == cell.value,
+      invalid: invalid,
+    }"
+    @click="setCellActive(row, col)"
+  >
     {{ cell.value }}
   </div>
 </template>
-
-<script>
-export default {
-  name: 'SudokuCell',
-  props: {
-    cell: Object,
-    row: Number,
-    col: Number,
-    invalid: Boolean,
-    active: Boolean,
-  },
-}
-</script>
 
 <style scoped>
 .cell {
@@ -52,6 +59,11 @@ export default {
 
 .cell.active {
   background-color: #0060df !important;
+  color: #fff;
+}
+
+.cell.matching {
+  background-color: #94bef4;
   color: #fff;
 }
 
