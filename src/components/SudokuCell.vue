@@ -67,6 +67,7 @@ const { setCellActive, isCellInvalid } = store;
   font-size: 11px;
   width: 8px;
   line-height: 8px;
+  min-height: 8px;
 }
 
 .cell.border-right {
