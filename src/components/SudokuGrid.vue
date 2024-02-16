@@ -4,7 +4,7 @@ import { storeToRefs } from "pinia";
 import SudokuCell from "./SudokuCell.vue";
 const store = useSudokuStore();
 
-const { puzzle, activeRow, activeCol } = storeToRefs(store);
+const { puzzle, activeRow, activeCol, notesActive } = storeToRefs(store);
 const { setCellActive, toggleNotes } = store;
 
 // eslint-disable-next-line
@@ -45,6 +45,10 @@ window.addEventListener("keydown", (e) => {
     ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key)
   ) {
     moveActiveCellValue(e.key);
+  } else if (
+    e.key === "n"
+  ) {
+    toggleNotes()
   }
 });
 </script>
@@ -63,8 +67,8 @@ window.addEventListener("keydown", (e) => {
   </div>
   <label class="container"
     >Notes
-    <input type="checkbox" @click="toggleNotes" />
-    <span class="checkmark"></span>
+    <input type="checkbox" id="checkbox" v-model="notesActive" @click="toggleNotes" />
+    <span for="checkbox"></span>
   </label>
 </template>
 
