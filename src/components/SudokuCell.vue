@@ -24,6 +24,7 @@ const { setCellActive, isCellInvalid } = store;
       matching:
         (cell.value && activeValue.value == cell.value) ||
         cell.notes.includes(activeValue.value),
+      highlight: row === activeRow || col === activeCol,
     }"
     @click="setCellActive(row, col)"
   >
@@ -81,17 +82,19 @@ const { setCellActive, isCellInvalid } = store;
 }
 
 .cell.active {
-  background-color: #0060df !important;
+  background-color: #21BAFC !important;
   color: #fff;
 }
 
 .cell.matching {
-  background-color: #94bef4;
-  color: #fff;
+  background-color: rgba(76, 199, 252, 0.6);
 }
 
 .cell.invalid {
-  background-color: #c00 !important; 
-  color: #fff;
+  background-color: rgba(255. 67, 23, 0.8) !important;
+}
+
+.cell.highlight:not(.active):not(.matching):not(.invalid) {
+  background-color: rgba(122, 211, 250, 0.2)
 }
 </style>
