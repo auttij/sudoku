@@ -1,7 +1,7 @@
 <script setup>
 import { useSudokuStore } from "../store.js";
 import { storeToRefs } from "pinia";
-import { isCellInvalid } from '../utils/sudokuHelpers.js'
+import { isCellInvalid } from "../utils/sudokuHelpers.js";
 defineProps({
   cell: Object,
   row: Number,
@@ -23,7 +23,7 @@ const { setCellActive } = store;
       invalid: cell.value && isCellInvalid(puzzle, row, col, cell.value),
       active: row === activeRow && col === activeCol,
       matching:
-        (cell.value && activeValue.value == cell.value) ||
+        (cell.value && activeValue == cell.value) ||
         cell.notes.includes(activeValue.value),
       highlight: row === activeRow || col === activeCol,
     }"
@@ -88,7 +88,7 @@ const { setCellActive } = store;
 }
 
 .cell.active:not(.invalid) {
-  background-color: #21BAFC !important;
+  background-color: #21bafc !important;
 }
 
 .cell.matching {
@@ -100,6 +100,6 @@ const { setCellActive } = store;
 }
 
 .cell.highlight:not(.active):not(.matching):not(.invalid) {
-  background-color: rgba(122, 211, 250, 0.2)
+  background-color: rgba(122, 211, 250, 0.2);
 }
 </style>

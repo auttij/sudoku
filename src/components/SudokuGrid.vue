@@ -25,7 +25,6 @@ function newPuzzle(difficulty) {
 function handleGameFinished() {
   const msg = ["Success!", ""];
   alert(msg.join("\n"));
-  newPuzzle();
 }
 function handleKeydownEvent(e) {
   if (["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(e.key)) {

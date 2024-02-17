@@ -32,7 +32,8 @@ export const useSudokuStore = defineStore({
       } else {
         this.activeRow = row;
         this.activeCol = col;
-        this.activeValue = this.puzzle[row][col];
+        if (this.puzzle[row][col].value)
+          this.activeValue = this.puzzle[row][col].value;
       }
     },
     toggleNotes() {
@@ -64,6 +65,7 @@ export const useSudokuStore = defineStore({
       cell.value = value;
       cell.notes.length = 0;
 
+      this.activeValue = value;
       this.removeNotes(value);
       this.checkGameFinished();
     },
