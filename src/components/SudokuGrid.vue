@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted, onUnmounted } from "vue";
 import { useSudokuStore } from "../store.js";
 import { storeToRefs } from "pinia";
 import SudokuCell from "./SudokuCell.vue";
@@ -10,35 +11,13 @@ const { setCellActive, toggleNotes } = store;
 // eslint-disable-next-line
 const { setCellValue, generatePuzzle } = store;
 function moveActiveCellValue(directionKey) {
-  let dr = 0;
-  let dc = 0;
-
-  switch (directionKey) {
-    case "ArrowRight":
-      dc += 1;
-      break;
-    case "ArrowLeft":
-      dc -= 1;
-      break;
-    case "ArrowDown":
-      dr += 1;
-      break;
-    case "ArrowUp":
-      dr -= 1;
-      break;
-    default:
-      break;
-  }
-
-  const newRow = activeRow.value + dr;
-  const newCol = activeCol.value + dc;
-
-  if (0 <= newRow && newRow < 9 && 0 <= newCol && newCol < 9)
-    setCellActive(newRow, newCol);
+  let dr = (directionKey === "ArrowDown") - (directionKey === "ArrowUp");
+  let dc = (directionKey === "ArrowRight") - (directionKey === "ArrowLeft");
+  const newRow = ((activeRow.value + dr % 9) + 9) % 9;
+  const newCol = ((activeCol.value + dc % 9) + 9) % 9;
+  setCellActive(newRow, newCol);
 }
-
-generatePuzzle();
-window.addEventListener("keydown", (e) => {
+function handleKeydownEvent(e) {
   if (["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(e.key)) {
     setCellValue(e.key);
   } else if (
@@ -50,7 +29,15 @@ window.addEventListener("keydown", (e) => {
   ) {
     toggleNotes()
   }
+}
+
+onMounted(() => {
+  generatePuzzle();
+  window.addEventListener("keydown", handleKeydownEvent)
 });
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleKeydownEvent);
+})
 </script>
 
 <template>
