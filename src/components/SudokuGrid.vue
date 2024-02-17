@@ -6,10 +6,7 @@ import SudokuCell from "./SudokuCell.vue";
 const store = useSudokuStore();
 
 const { puzzle, activeRow, activeCol, notesActive } = storeToRefs(store);
-const { setCellActive, toggleNotes } = store;
-
-// eslint-disable-next-line
-const { setCellValue, generatePuzzle } = store;
+const { handleCellEdit, setCellActive, toggleNotes, generatePuzzle } = store;
 function moveActiveCellValue(directionKey) {
   let dr = (directionKey === "ArrowDown") - (directionKey === "ArrowUp");
   let dc = (directionKey === "ArrowRight") - (directionKey === "ArrowLeft");
@@ -19,7 +16,7 @@ function moveActiveCellValue(directionKey) {
 }
 function handleKeydownEvent(e) {
   if (["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(e.key)) {
-    setCellValue(e.key);
+    handleCellEdit(e.key);
   } else if (
     ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key)
   ) {

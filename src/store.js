@@ -10,10 +10,13 @@ export const useSudokuStore = defineStore({
     activeValue: -1,
     notesActive: false,
   }),
+  getters: {
+    canEdit(state) {
+      return (state.activeRow >= 0 && state.activeCol >= 0) &&
+        !state.puzzle[state.activeRow][state.activeCol].original
+    }
+  },
   actions: {
-    toggleNotes() {
-      this.notesActive = !this.notesActive;
-    },
     setCellActive(row, col) {
       if (this.activeRow === row && this.activeCol === col) {
         this.activeRow = -1;
@@ -23,6 +26,74 @@ export const useSudokuStore = defineStore({
         this.activeRow = row;
         this.activeCol = col;
         this.activeValue = this.puzzle[row][col];
+      }
+    },
+    toggleNotes() {
+      this.notesActive = !this.notesActive;
+    },
+    handleCellEdit(inputKey) {
+      const value = Number(inputKey);
+
+      if (!this.canEdit) return;
+      const cell = this.puzzle[this.activeRow][this.activeCol];
+
+      if (this.notesActive)
+        this.setCellNotes(cell, value);
+      else
+        this.setCellValue(cell, value);
+    },
+    setCellNotes(cell, value) {
+      if (cell.notes.includes(value)) {
+        const index = cell.notes.indexOf(value);
+        cell.notes.splice(index, 1);
+        return;
+      }
+      cell.notes.push(value);
+    },
+    setCellValue(cell, value) {
+      if (cell.value === value) {
+        cell.value = null;
+        return;
+      }
+
+      cell.value = value;
+      cell.notes.length = 0;
+
+      this.removeNotes(value);
+      if (isGameComplete(this.puzzle)) {
+        const msg = ["Success!", ""];
+
+        alert(msg.join("\n"));
+        this.generatePuzzle();
+      }
+    },
+    removeNotes(value) {
+      for (let r = 0; r < 9; r += 1) {
+        const cell = this.puzzle[r][this.activeCol];
+        const idx = cell.notes.indexOf(value);
+        if (idx >= 0) {
+          cell.notes.splice(idx, 1);
+        }
+      }
+
+      for (let c = 0; c < 9; c += 1) {
+        const cell = this.puzzle[this.activeRow][c];
+        const idx = cell.notes.indexOf(value);
+        if (idx >= 0) {
+          cell.notes.splice(idx, 1);
+        }
+      }
+
+      const rowStart = Math.floor(this.activeRow / 3) * 3;
+      const colStart = Math.floor(this.activeCol / 3) * 3;
+      for (let r = rowStart; r < rowStart + 3; r += 1) {
+        for (let c = colStart; c < colStart + 3; c += 1) {
+          const cell = this.puzzle[r][c];
+          const idx = cell.notes.indexOf(value);
+          if (idx >= 0) {
+            cell.notes.splice(idx, 1);
+          }
+        }
       }
     },
     setPuzzle(puzzle) {
@@ -64,70 +135,6 @@ export const useSudokuStore = defineStore({
         });
       });
       this.setPuzzle(puzzle);
-    },
-    setCellValue(inputKey) {
-      const value = Number(inputKey);
-
-      if (
-        !(this.activeRow >= 0 && this.activeCol >= 0) ||
-        this.puzzle[this.activeRow][this.activeCol].original
-      ) {
-        return;
-      }
-
-      const cell = this.puzzle[this.activeRow][this.activeCol];
-      if (this.notesActive && cell.notes.includes(value)) {
-        const index = cell.notes.indexOf(value);
-        cell.notes.splice(index, 1);
-        return;
-      } else if (cell.value === value) {
-        cell.value = null;
-        return;
-      }
-
-      if (this.notesActive) {
-        cell.notes.push(value);
-      } else {
-        cell.value = value;
-        cell.notes.length = 0;
-        this.removeNotes(value);
-      }
-
-      if (isGameComplete(this.puzzle)) {
-        const msg = ["Success!", ""];
-
-        alert(msg.join("\n"));
-        this.generatePuzzle();
-      }
-    },
-    removeNotes(value) {
-      for (let r = 0; r < 9; r += 1) {
-        const cell = this.puzzle[r][this.activeCol];
-        const idx = cell.notes.indexOf(value);
-        if (idx >= 0) {
-          cell.notes.splice(idx, 1);
-        }
-      }
-
-      for (let c = 0; c < 9; c += 1) {
-        const cell = this.puzzle[this.activeRow][c];
-        const idx = cell.notes.indexOf(value);
-        if (idx >= 0) {
-          cell.notes.splice(idx, 1);
-        }
-      }
-
-      const rowStart = Math.floor(this.activeRow / 3) * 3;
-      const colStart = Math.floor(this.activeCol / 3) * 3;
-      for (let r = rowStart; r < rowStart + 3; r += 1) {
-        for (let c = colStart; c < colStart + 3; c += 1) {
-          const cell = this.puzzle[r][c];
-          const idx = cell.notes.indexOf(value);
-          if (idx >= 0) {
-            cell.notes.splice(idx, 1);
-          }
-        }
-      }
     },
   },
 });
