@@ -4,14 +4,14 @@
 </template>
 
 <script>
-import SudokuGrid from './components/SudokuGrid.vue'
+import SudokuGrid from "./components/SudokuGrid.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    SudokuGrid
-  }
-}
+    SudokuGrid,
+  },
+};
 </script>
 
 <style>
@@ -22,5 +22,12 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+input,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
 }
 </style>

@@ -13,12 +13,15 @@ export const useSudokuStore = defineStore({
   }),
   getters: {
     canEdit(state) {
-      return (state.activeRow >= 0 && state.activeCol >= 0) &&
+      return (
+        state.activeRow >= 0 &&
+        state.activeCol >= 0 &&
         !state.puzzle[state.activeRow][state.activeCol].original
+      );
     },
     gameFinished(state) {
       return state.isGameFinished;
-    }
+    },
   },
   actions: {
     setCellActive(row, col) {
@@ -41,10 +44,8 @@ export const useSudokuStore = defineStore({
       if (!this.canEdit) return;
       const cell = this.puzzle[this.activeRow][this.activeCol];
 
-      if (this.notesActive)
-        this.setCellNotes(cell, value);
-      else
-        this.setCellValue(cell, value);
+      if (this.notesActive) this.setCellNotes(cell, value);
+      else this.setCellValue(cell, value);
     },
     setCellNotes(cell, value) {
       if (cell.notes.includes(value)) {
@@ -101,6 +102,6 @@ export const useSudokuStore = defineStore({
     },
     checkGameFinished() {
       this.isGameFinished = isGameComplete(this.puzzle);
-    }
+    },
   },
 });
