@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { isGameComplete } from "./utils/sudokuHelpers";
 
 export const useSudokuStore = defineStore({
   id: "sudoku",
@@ -64,46 +65,6 @@ export const useSudokuStore = defineStore({
       });
       this.setPuzzle(puzzle);
     },
-    isCellInvalid(row, col, value) {
-      if (!value) {
-        return true;
-      }
-
-      for (let c = 0; c < 9; c += 1) {
-        if (this.puzzle[row][c].value === value && c !== col) {
-          return true;
-        }
-      }
-
-      for (let r = 0; r < 9; r += 1) {
-        if (this.puzzle[r][col].value === value && r !== row) {
-          return true;
-        }
-      }
-
-      const rowStart = Math.floor(row / 3) * 3;
-      const colStart = Math.floor(col / 3) * 3;
-      for (let r = rowStart; r < rowStart + 3; r += 1) {
-        for (let c = colStart; c < colStart + 3; c += 1) {
-          if (this.puzzle[r][c].value === value && !(r === row && c === col)) {
-            return true;
-          }
-        }
-      }
-
-      return false;
-    },
-    isGameComplete() {
-      for (let r = 0; r < 9; r += 1) {
-        for (let c = 0; c < 9; c += 1) {
-          if (this.isCellInvalid(r, c, this.puzzle[r][c].value)) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    },
     setCellValue(inputKey) {
       const value = Number(inputKey);
 
@@ -132,7 +93,7 @@ export const useSudokuStore = defineStore({
         this.removeNotes(value);
       }
 
-      if (this.isGameComplete()) {
+      if (isGameComplete(this.puzzle)) {
         const msg = ["Success!", ""];
 
         alert(msg.join("\n"));

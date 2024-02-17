@@ -1,6 +1,7 @@
 <script setup>
 import { useSudokuStore } from "../store.js";
 import { storeToRefs } from "pinia";
+import { isCellInvalid } from '../utils/sudokuHelpers.js'
 defineProps({
   cell: Object,
   row: Number,
@@ -8,8 +9,8 @@ defineProps({
 });
 
 const store = useSudokuStore();
-const { activeRow, activeCol, activeValue } = storeToRefs(store);
-const { setCellActive, isCellInvalid } = store;
+const { activeRow, activeCol, activeValue, puzzle } = storeToRefs(store);
+const { setCellActive } = store;
 </script>
 
 <template>
@@ -19,7 +20,7 @@ const { setCellActive, isCellInvalid } = store;
       'border-right': col === 2 || col == 5,
       'border-bottom': row === 2 || row == 5,
       original: cell.original,
-      invalid: cell.value && isCellInvalid(row, col, cell.value),
+      invalid: cell.value && isCellInvalid(puzzle, row, col, cell.value),
       active: row === activeRow && col === activeCol,
       matching:
         (cell.value && activeValue.value == cell.value) ||
