@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { isGameComplete } from "./utils/sudokuHelpers";
+import { isGameComplete } from "@/utils/sudokuHelpers";
 
 export const useSudokuStore = defineStore({
   id: "sudoku",
@@ -9,11 +9,15 @@ export const useSudokuStore = defineStore({
     activeCol: -1,
     activeValue: -1,
     notesActive: false,
+    isGameFinished: false,
   }),
   getters: {
     canEdit(state) {
       return (state.activeRow >= 0 && state.activeCol >= 0) &&
         !state.puzzle[state.activeRow][state.activeCol].original
+    },
+    gameFinished(state) {
+      return state.isGameFinished;
     }
   },
   actions: {
@@ -60,12 +64,7 @@ export const useSudokuStore = defineStore({
       cell.notes.length = 0;
 
       this.removeNotes(value);
-      if (isGameComplete(this.puzzle)) {
-        const msg = ["Success!", ""];
-
-        alert(msg.join("\n"));
-        this.generatePuzzle();
-      }
+      this.checkGameFinished();
     },
     removeNotes(value) {
       for (let r = 0; r < 9; r += 1) {
@@ -98,43 +97,10 @@ export const useSudokuStore = defineStore({
     },
     setPuzzle(puzzle) {
       this.puzzle = puzzle;
+      this.isGameFinished = false;
     },
-    generatePuzzle() {
-      // eslint-disable-next-line
-      const almostComplete = [
-        "123456789",
-        "789123456",
-        "456789123",
-        "912345678",
-        "6789.2345",
-        "345678912",
-        "567891234",
-        "891234567",
-        "234567891",
-      ];
-      // eslint-disable-next-line
-      const example = [
-        ".8..62.5.",
-        "6..3....8",
-        "..38..4..",
-        "1.....76.",
-        "9.......1",
-        ".78.....4",
-        "..9..13..",
-        "8....4..5",
-        ".1.53..4.",
-      ];
-
-      const puzzle = example.map((row) => {
-        return row.split("").map((cell) => {
-          return {
-            value: cell !== "." ? parseInt(cell) : null,
-            original: cell !== ".",
-            notes: [],
-          };
-        });
-      });
-      this.setPuzzle(puzzle);
-    },
+    checkGameFinished() {
+      this.isGameFinished = isGameComplete(this.puzzle);
+    }
   },
 });

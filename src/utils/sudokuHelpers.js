@@ -31,11 +31,49 @@ export const isCellInvalid = (puzzle, row, col, value) => {
 export const isGameComplete = (puzzle) => {
   for (let r = 0; r < 9; r += 1) {
     for (let c = 0; c < 9; c += 1) {
-      if (isCellInvalid(puzzle, r, c, puzzle[r][c].value)) {
+      const value = puzzle[r][c].value
+      if (!value || isCellInvalid(puzzle, r, c, value)) {
         return false;
       }
     }
   }
 
   return true;
+}
+
+export const generatePuzzle = () => {
+  // eslint-disable-next-line
+  const almostComplete = [
+    "123456789",
+    "789123456",
+    "456789123",
+    "912345678",
+    "6789.2345",
+    "345678912",
+    "567891234",
+    "891234567",
+    "234567891",
+  ];
+  // eslint-disable-next-line
+  const example = [
+    ".8..62.5.",
+    "6..3....8",
+    "..38..4..",
+    "1.....76.",
+    "9.......1",
+    ".78.....4",
+    "..9..13..",
+    "8....4..5",
+    ".1.53..4.",
+  ];
+
+  return example.map((row) => {
+    return row.split("").map((cell) => {
+      return {
+        value: cell !== "." ? parseInt(cell) : null,
+        original: cell !== ".",
+        notes: [],
+      };
+    });
+  });
 }

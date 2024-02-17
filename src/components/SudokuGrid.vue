@@ -2,11 +2,12 @@
 import { onMounted, onUnmounted } from "vue";
 import { useSudokuStore } from "../store.js";
 import { storeToRefs } from "pinia";
+import { generatePuzzle } from "@/utils/sudokuHelpers";
 import SudokuCell from "./SudokuCell.vue";
 const store = useSudokuStore();
 
-const { puzzle, activeRow, activeCol, notesActive } = storeToRefs(store);
-const { handleCellEdit, setCellActive, toggleNotes, generatePuzzle } = store;
+const { puzzle, activeRow, activeCol, notesActive, gameFinished } = storeToRefs(store);
+const { handleCellEdit, setCellActive, toggleNotes, setPuzzle } = store;
 function moveActiveCellValue(directionKey) {
   let dr = (directionKey === "ArrowDown") - (directionKey === "ArrowUp");
   let dc = (directionKey === "ArrowRight") - (directionKey === "ArrowLeft");
@@ -14,9 +15,21 @@ function moveActiveCellValue(directionKey) {
   const newCol = ((activeCol.value + dc % 9) + 9) % 9;
   setCellActive(newRow, newCol);
 }
+
+function newPuzzle() {
+  const puzzle = generatePuzzle();
+  setPuzzle(puzzle);
+}
+function handleGameFinished() {
+  const msg = ["Success!", ""];
+  alert(msg.join("\n"));
+  newPuzzle();
+}
 function handleKeydownEvent(e) {
   if (["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(e.key)) {
     handleCellEdit(e.key);
+    if (gameFinished.value)
+      handleGameFinished();
   } else if (
     ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key)
   ) {
@@ -29,7 +42,7 @@ function handleKeydownEvent(e) {
 }
 
 onMounted(() => {
-  generatePuzzle();
+  newPuzzle();
   window.addEventListener("keydown", handleKeydownEvent)
 });
 onUnmounted(() => {
