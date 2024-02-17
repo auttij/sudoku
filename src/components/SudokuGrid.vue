@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, onUnmounted } from "vue";
-import { useSudokuStore } from "../store.js";
+import { useSudokuStore } from "../store/sudokuStore.js";
 import { storeToRefs } from "pinia";
 import { generatePuzzle } from "@/utils/sudokuHelpers";
 import SudokuCell from "./SudokuCell.vue";

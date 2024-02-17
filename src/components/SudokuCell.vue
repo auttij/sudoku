@@ -1,5 +1,5 @@
 <script setup>
-import { useSudokuStore } from "../store.js";
+import { useSudokuStore } from "../store/sudokuStore.js";
 import { storeToRefs } from "pinia";
 import { isCellInvalid } from "../utils/sudokuHelpers.js";
 defineProps({
