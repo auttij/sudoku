@@ -1,3 +1,9 @@
+import { getSudoku } from 'sudoku-gen';
+
+export const getDifficultyOptions = () => {
+  return ["easy", "medium", "hard", "expert"]
+}
+
 export const isCellInvalid = (puzzle, row, col, value) => {
   if (!value) {
     return true;
@@ -41,37 +47,25 @@ export const isGameComplete = (puzzle) => {
   return true;
 }
 
-export const generatePuzzle = () => {
-  // eslint-disable-next-line
-  const almostComplete = [
-    "123456789",
-    "789123456",
-    "456789123",
-    "912345678",
-    "6789.2345",
-    "345678912",
-    "567891234",
-    "891234567",
-    "234567891",
-  ];
-  // eslint-disable-next-line
-  const example = [
-    ".8..62.5.",
-    "6..3....8",
-    "..38..4..",
-    "1.....76.",
-    "9.......1",
-    ".78.....4",
-    "..9..13..",
-    "8....4..5",
-    ".1.53..4.",
-  ];
+function chunkSubstr(str, size) {
+  const numChunks = Math.ceil(str.length / size)
+  const chunks = new Array(numChunks)
 
-  return example.map((row) => {
+  for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+    chunks[i] = str.substr(o, size)
+  }
+
+  return chunks
+}
+
+export const generatePuzzle = (difficulty) => {
+  const sudokuObj = getSudoku(difficulty)
+  const puzzle = chunkSubstr(sudokuObj.puzzle, 9)
+  return puzzle.map((row) => {
     return row.split("").map((cell) => {
       return {
-        value: cell !== "." ? parseInt(cell) : null,
-        original: cell !== ".",
+        value: cell !== "-" ? parseInt(cell) : null,
+        original: cell !== "-",
         notes: [],
       };
     });

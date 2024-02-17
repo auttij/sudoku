@@ -17,7 +17,7 @@ function moveActiveCellValue(directionKey) {
 }
 
 function newPuzzle() {
-  const puzzle = generatePuzzle();
+  const puzzle = generatePuzzle("hard");
   setPuzzle(puzzle);
 }
 function handleGameFinished() {
