@@ -83,8 +83,11 @@ const { setCellActive, isCellInvalid } = store;
 }
 
 .cell.active {
-  background-color: #21BAFC !important;
   color: #fff;
+}
+
+.cell.active:not(.invalid) {
+  background-color: #21BAFC !important;
 }
 
 .cell.matching {
@@ -92,7 +95,7 @@ const { setCellActive, isCellInvalid } = store;
 }
 
 .cell.invalid {
-  background-color: rgba(255. 67, 23, 0.8) !important;
+  background-color: rgba(255, 67, 23, 0.8) !important;
 }
 
 .cell.highlight:not(.active):not(.matching):not(.invalid) {
